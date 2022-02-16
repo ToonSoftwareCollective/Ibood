@@ -126,7 +126,7 @@ Tile {
 					
 					var found = false;
 					for (var index in idArray){
-						if (current_deal.Title === idArray[index]){found =true}
+						if (current_deal.Id === idArray[index]){found =true}
 					}
 					if (!found){
 						if (debugOutput) console.log("*********IBOOD " + current_deal.Title)
@@ -136,7 +136,7 @@ Tile {
 						
 						idArray.unshift(current_deal.Id);
 						if (idArray.length>5){
-							title.pop();
+							idArray.pop();
 						}
 
 						if(current_deal.SaleType!=="normal"){
