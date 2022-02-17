@@ -7,7 +7,7 @@ import qb.base 1.0;
 
 App {
 	id: iboodApp
-	property bool 		debugOutput: true
+	property bool 		debugOutput: false
 	property url 		tileUrl : "IboodTile.qml"
 	//property url 		thumbnailIcon: "qrc:/tsc/bad_small.png"
 	property url 		thumbnailIcon: "qrc://apps/statusUsage/drawables/tile_total_thumb.svg"
