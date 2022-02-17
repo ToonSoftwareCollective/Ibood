@@ -16,7 +16,7 @@ Tile {
     Image {
 		id: image1
 		fillMode: Image.PreserveAspectFit
-		height: isNxt? 150:120
+		height: isNxt? 145:120
 		source: ""
 		anchors {
 			top: parent.top
