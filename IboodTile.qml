@@ -112,76 +112,66 @@ Tile {
     function getIbood(){
         if (debugOutput) console.log("*********IBOOD Start getIbood")
         var http = new XMLHttpRequest()
-        var siteURL = "http://feeds.ibood.com/nl/nl/offer.json?" + Math.random()*Math.random();
+        var siteURL = "https://www.ibood.com/offers/nl/s-nl?" + Math.random()*Math.random();
             var xhr = new XMLHttpRequest();
             xhr.open("GET", siteURL, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4) {
-                    var json = xhr.responseText;
-                    if (debugOutput) console.log("*********IBOOD "+ json);
-                    json = json.replace(/^[^(]*\(([\S\s]+)\);?$/, '$1');
-                    var current_deal = JSON.parse(json);
+                    var parseString = xhr.responseText;
                     
-					if (debugOutput) console.log("*********IBOOD " + current_deal.Id)
-					
-					var found = false;
-					for (var index in idArray){
-						if (current_deal.Id === idArray[index]){found =true}
-					}
-					if (!found){
-						if (debugOutput) console.log("*********IBOOD " + current_deal.Title)
-						if (debugOutput) console.log("*********IBOOD " + current_deal.SaleType)
-						if (debugOutput) console.log("*********IBOOD " + current_deal.ShortTitle)
-						if (debugOutput) console.log("*********IBOOD " + current_deal.Permalink)
-						
-						idArray.unshift(current_deal.Id);
-						if (idArray.length>5){
-							idArray.pop();
-						}
+                    var pieceofHTML= parseString.split("__NEXT_DATA__")[1]
+                    pieceofHTML= pieceofHTML.split("\">")[1].split("</script>")[0]
+                    if (debugOutput) console.log("*********IBOOD " + pieceofHTML)
+                    var current_deal = JSON.parse(pieceofHTML);
 
-						if(current_deal.SaleType!=="normal"){
-							scrapeTimer.interval = 30000
-							showHunt=true
-						}else{
-							scrapeTimer.interval = 300000
-							showHunt = false
-						}
-						
-						title.text =  current_deal.ShortTitle
+                    var dealpart
+                    if(current_deal.props.pageProps.hunt){
+						dealpart = current_deal.props.pageProps.hunt
+						showHunt=true;	
+						scrapeTimer.interval = 30000
+                    }else{
+						dealpart = current_deal.props.pageProps.offers[0]
+						showHunt=false;
+						scrapeTimer.interval = 300000
+                    }
 
-						var begin = current_deal.Image.indexOf('data-large=') + 14;
-						var einde = current_deal.Image.indexOf('jpg', begin) + 3;
-						var newstring1 = current_deal.Image.substring (begin, einde);
-						if (debugOutput) console.log("*********IBOOD " + 'http://' +newstring1);
-						image1.source = 'http://' +newstring1
+                    if (debugOutput) console.log("*********IBOOD " + "Scraper Interval: " + scrapeInterval)
+                    if (debugOutput) console.log("*********IBOOD " + dealpart.offerItemClassicId)
+                    if (debugOutput) console.log("*********IBOOD " + dealpart.title)
 
-						begin = current_deal.Price.indexOf('old-price') + 11;
-						var begin2 = current_deal.Price.indexOf('€ ',begin) + '€ '.length;
-						einde = current_deal.Price.indexOf('</span>', begin2);
-						var oldprice1 = current_deal.Price.substring (begin2, einde);
-						if (debugOutput) console.log("*********IBOOD " + oldprice1);
-						oldprice.text = oldprice1
+                    title.text =  dealpart.title
 
-						begin = current_deal.Price.indexOf('new-price') + 11;
-						begin2 = current_deal.Price.indexOf('€ ',begin) + '€ '.length;
-						einde = current_deal.Price.indexOf('</span>', begin2);
-						var newprice1 = current_deal.Price.substring (begin2, einde);
-						if (debugOutput) console.log("*********IBOOD " + newprice1)
-						
-						if (isNxt){
-							backgroundRect.width = newprice1.length*17
-						}else{
-							backgroundRect.width = newprice1.length*14
-						}
-						showPrice=true
-						newprice.text = newprice1
-						dimmedPrice.text = newprice1
-						
-					}//not found
+                    image1.source = dealpart.image
+
+                    var oldprice1 = dealpart.referencePrice.value
+                    var leftSide= oldprice1.toString().split(".")[0]
+                    if (leftSide.toString() === undefined){leftSide = "00"}
+                    var rightSide= oldprice1.toString().split(".")[1]
+                    if (rightSide.toString() === undefined){rightSide = "00"}
+                    if (rightSide.length === 0) rightSide = "00"
+                    if (rightSide.length === 1) rightSide = rightSide + "0"
+                    oldprice1 = leftSide.toString() + "," + rightSide.toString()
+                    if (debugOutput) console.log ("*********IBOOD " + oldprice1);
+                    oldprice.text = oldprice1
+
+                    var newprice1 = dealpart.price.value
+                    if (debugOutput) console.log (newprice1);
+                    leftSide= newprice1.toString().split(".")[0]
+                    if (leftSide.toString() === undefined){leftSide = "00"}
+                    rightSide= newprice1.toString().split(".")[1]
+                    if (rightSide.toString() === undefined){rightSide = "00"}
+                    if (rightSide.length === 0) rightSide = "00"
+                    if (rightSide.length === 1) rightSide = rightSide + "0"
+                    newprice1 = leftSide.toString() + "," + rightSide.toString()
+                    if (debugOutput) console.log ("*********IBOOD " + newprice1);
+                    
+					showPrice=true
+					newprice.text = newprice1
+					dimmedPrice.text = newprice1
                 }
             }
-            xhr.send();
-    }
+            xhr.send();    
+	}
 
     Timer {
 		id: scrapeTimer
