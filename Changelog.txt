@@ -1,3 +1,6 @@
+1.2.1
+- small changes in feed
+
 1.2.0
 - different feed method
 

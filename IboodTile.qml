@@ -135,13 +135,13 @@ Tile {
 						scrapeTimer.interval = 300000
                     }
 
-                    if (debugOutput) console.log("*********IBOOD " + "Scraper Interval: " + scrapeInterval)
-                    if (debugOutput) console.log("*********IBOOD " + dealpart.offerItemClassicId)
+                    if (debugOutput) console.log("*********IBOOD " + "Scraper Interval: " + scrapeTimer.interval)
+                    if (debugOutput) console.log("*********IBOOD " + dealpart.classicId)
                     if (debugOutput) console.log("*********IBOOD " + dealpart.title)
 
                     title.text =  dealpart.title
 
-                    image1.source = dealpart.image
+                    image1.source = "https://images0.ibood.com/" + dealpart.image.id + ".jpg"
 
                     var oldprice1 = dealpart.referencePrice.value
                     var leftSide= oldprice1.toString().split(".")[0]
